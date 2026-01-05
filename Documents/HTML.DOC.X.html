@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Railway Booking System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* Login Page */
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-container::before {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: moveBackground 20s linear infinite;
+        }
+
+        @keyframes moveBackground {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        .login-box {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+            text-align: center;
+            z-index: 10;
+            width: 400px;
+            animation: slideIn 0.6s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Animated Train Logo */
+        .train-logo {
+            width: 150px;
+            height: 100px;
+            margin: 0 auto 20px;
+            position: relative;
+        }
+
+        .train {
+            width: 80px;
+            height: 50px;
+            background: #ff6b6b;
+            border-radius: 10px;
+            position: absolute;
+            left: 0;
+            animation: moveTrain 3s ease-in-out infinite;
+        }
+
+        .train::before {
+            content: '';
+            width: 20px;
+            height: 20px;
+            background: #ffd93d;
+            border-radius: 50%;
+            position: absolute;
+            left: -15px;
+            top: 15px;
+        }
+
+        .train::after {
+            content: '';
+            width: 25px;
+            height: 35px;
+            background: #4ecdc4;
+            position: absolute;
+            top: -30px;
+            left: 25px;
+            border-radius: 5px;
+        }
+
+        .wheels {
+            position: absolute;
+            bottom: -10px;
+            display: flex;
+            gap: 30px;
+            left: 15px;
+        }
+
+        .wheel {
+            width: 15px;
+            height: 15px;
+            background: #333;
+            border-radius: 50%;
+            border: 3px solid #666;
+            animation: rotateWheel 0.5s linear infinite;
+        }
+
+        @keyframes moveTrain {
+            0%, 100% { left: 0; }
+            50% { left: 70px; }
+        }
+
+        @keyframes rotateWheel {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .tracks {
+            position: absolute;
+            bottom: 20px;
+            width: 100%;
+            height: 3px;
+            background: repeating-linear-gradient(90deg, #333 0px, #333 20px, transparent 20px, transparent 30px);
+        }
+
+        .login-box h2 {
+            color: #667eea;
+            margin-bottom: 30px;
+            font-size: 28px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+            font-weight: 600;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 10px rgba(102, 126, 234, 0.3);
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        /* Home Page */
+        .home-container {
+            display: none;
+            background: linear-gradient(to bottom, #87CEEB 0%, #E0F6FF 100%);
+            min-height: 100vh;
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .navbar h1 {
+            color: white;
+            font-size: 28px;
+        }
+
+        .logout-btn {
+            padding: 10px 25px;
+            background: white;
+            color: #667eea;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .logout-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .content {
+            padding: 40px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .feature-card:hover::before {
+            left: 100%;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+        }
+
+        .feature-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .feature-card h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 22px;
+        }
+
+        .feature-card p {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            animation: slideUp 0.3s;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-header h2 {
+            color: #667eea;
+        }
+
+        .close-btn {
+            font-size: 30px;
+            cursor: pointer;
+            color: #999;
+            transition: color 0.3s;
+        }
+
+        .close-btn:hover {
+            color: #333;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+            font-weight: 600;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .result-box {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        .result-box h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            font-weight: 600;
+            color: #555;
+        }
+
+        .info-value {
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Page -->
+    <div class="login-container" id="loginPage">
+        <div class="login-box">
+            <div class="train-logo">
+                <div class="train">
+                    <div class="wheels">
+                        <div class="wheel"></div>
+                        <div class="wheel"></div>
+                    </div>
+                </div>
+                <div class="tracks"></div>
+            </div>
+            <h2>Railway Booking System</h2>
+            <form id="loginForm">
+                <div class="input-group">
+                    <label>Username</label>
+                    <input type="text" id="username" placeholder="Enter username" required>
+                </div>
+                <div class="input-group">
+                    <label>Password</label>
+                    <input type="password" id="password" placeholder="Enter password" required>
+                </div>
+                <button type="submit" class="login-btn">Login</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Home Page -->
+    <div class="home-container" id="homePage">
+        <div class="navbar">
+            <h1>🚂 Railway Booking System</h1>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </div>
+
+        <div class="content">
+            <div class="feature-grid">
+                <div class="feature-card" onclick="openModal('pnrModal')">
+                    <span class="feature-icon">🔍</span>
+                    <h3>Enter PNR Number</h3>
+                    <p>Check your booking status and journey details using PNR number</p>
+                </div>
+
+                <div class="feature-card" onclick="openModal('trainDetailsModal')">
+                    <span class="feature-icon">🚆</span>
+                    <h3>Train Details</h3>
+                    <p>Search trains, check schedules, and seat availability</p>
+                </div>
+
+                <div class="feature-card" onclick="openModal('reservationModal')">
+                    <span class="feature-icon">🎫</span>
+                    <h3>Reservation</h3>
+                    <p>Book your train tickets quickly and easily</p>
+                </div>
+
+                <div class="feature-card" onclick="openModal('addressModal')">
+                    <span class="feature-icon">📍</span>
+                    <h3>Address</h3>
+                    <p>Manage your saved addresses for ticket delivery</p>
+                </div>
+
+                <div class="feature-card" onclick="openModal('paymentModal')">
+                    <span class="feature-icon">💳</span>
+                    <h3>Payment Gateway</h3>
+                    <p>Secure payment options for your bookings</p>
+                </div>
+
+                <div class="feature-card" onclick="openModal('downloadModal')">
+                    <span class="feature-icon">⬇️</span>
+                    <h3>Download Ticket</h3>
+                    <p>Download your e-tickets in PDF format</p>
+                </div>
+
+                <div class="feature-card" onclick="openModal('cancelModal')">
+                    <span class="feature-icon">❌</span>
+                    <h3>Cancel Ticket</h3>
+                    <p>Cancel your booking and get refund status</p>
+                </div>
+
+                <div class="feature-card" onclick="openModal('adminModal')">
+                    <span class="feature-icon">⚙️</span>
+                    <h3>Admin Panel</h3>
+                    <p>Manage trains, bookings, and system settings</p>
+                </div>
+
+                <div class="feature-card" onclick="openModal('trackingModal')">
+                    <span class="feature-icon">📡</span>
+                    <h3>Train Live Tracking</h3>
+                    <p>Track your train's real-time location and status</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PNR Modal -->
+    <div class="modal" id="pnrModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Check PNR Status</h2>
+                <span class="close-btn" onclick="closeModal('pnrModal')">&times;</span>
+            </div>
+            <form onsubmit="checkPNR(event)">
+                <div class="form-group">
+                    <label>PNR Number</label>
+                    <input type="text" placeholder="Enter 10-digit PNR" pattern="[0-9]{10}" required>
+                </div>
+                <button type="submit" class="submit-btn">Check Status</button>
+            </form>
+            <div class="result-box" id="pnrResult" style="display:none;">
+                <h3>PNR Status</h3>
+                <div class="info-row">
+                    <span class="info-label">PNR:</span>
+                    <span class="info-value">1234567890</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Train:</span>
+                    <span class="info-value">12345 - Rajdhani Express</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Status:</span>
+                    <span class="info-value">CNF / B2 / 45</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Journey Date:</span>
+                    <span class="info-value">15-Dec-2025</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Train Details Modal -->
+    <div class="modal" id="trainDetailsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Train Details</h2>
+                <span class="close-btn" onclick="closeModal('trainDetailsModal')">&times;</span>
+            </div>
+            <form onsubmit="searchTrain(event)">
+                <div class="form-group">
+                    <label>From Station</label>
+                    <input type="text" placeholder="Enter source station" required>
+                </div>
+                <div class="form-group">
+                    <label>To Station</label>
+                    <input type="text" placeholder="Enter destination station" required>
+                </div>
+                <div class="form-group">
+                    <label>Journey Date</label>
+                    <input type="date" required>
+                </div>
+                <button type="submit" class="submit-btn">Search Trains</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Reservation Modal -->
+    <div class="modal" id="reservationModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Book Ticket</h2>
+                <span class="close-btn" onclick="closeModal('reservationModal')">&times;</span>
+            </div>
+            <form onsubmit="bookTicket(event)">
+                <div class="form-group">
+                    <label>Passenger Name</label>
+                    <input type="text" placeholder="Enter full name" required>
+                </div>
+                <div class="form-group">
+                    <label>Age</label>
+                    <input type="number" placeholder="Enter age" min="1" max="120" required>
+                </div>
+                <div class="form-group">
+                    <label>Gender</label>
+                    <select required>
+                        <option value="">Select</option>
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Train Number</label>
+                    <input type="text" placeholder="Enter train number" required>
+                </div>
+                <div class="form-group">
+                    <label>Class</label>
+                    <select required>
+                        <option value="">Select Class</option>
+                        <option value="1A">1A - First AC</option>
+                        <option value="2A">2A - Second AC</option>
+                        <option value="3A">3A - Third AC</option>
+                        <option value="SL">SL - Sleeper</option>
+                    </select>
+                </div>
+                <button type="submit" class="submit-btn">Proceed to Payment</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Address Modal -->
+    <div class="modal" id="addressModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Manage Address</h2>
+                <span class="close-btn" onclick="closeModal('addressModal')">&times;</span>
+            </div>
+            <form onsubmit="saveAddress(event)">
+                <div class="form-group">
+                    <label>Full Address</label>
+                    <textarea rows="3" placeholder="Enter your address" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label>City</label>
+                    <input type="text" placeholder="Enter city" required>
+                </div>
+                <div class="form-group">
+                    <label>State</label>
+                    <input type="text" placeholder="Enter state" required>
+                </div>
+                <div class="form-group">
+                    <label>PIN Code</label>
+                    <input type="text" placeholder="Enter PIN code" pattern="[0-9]{6}" required>
+                </div>
+                <button type="submit" class="submit-btn">Save Address</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Payment Modal -->
+    <div class="modal" id="paymentModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Payment Gateway</h2>
+                <span class="close-btn" onclick="closeModal('paymentModal')">&times;</span>
+            </div>
+            <form onsubmit="processPayment(event)">
+                <div class="form-group">
+                    <label>Payment Method</label>
+                    <select required>
+                        <option value="">Select Method</option>
+                        <option value="card">Credit/Debit Card</option>
+                        <option value="upi">UPI</option>
+                        <option value="netbanking">Net Banking</option>
+                        <option value="wallet">Wallet</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Card Number</label>
+                    <input type="text" placeholder="XXXX XXXX XXXX XXXX" pattern="[0-9]{16}" required>
+                </div>
+                <div class="form-group">
+                    <label>CVV</label>
+                    <input type="password" placeholder="XXX" pattern="[0-9]{3}" required>
+                </div>
+                <div class="form-group">
+                    <label>Amount</label>
+                    <input type="text" value="₹ 1,250.00" readonly>
+                </div>
+                <button type="submit" class="submit-btn">Pay Now</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Download Modal -->
+    <div class="modal" id="downloadModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Download Ticket</h2>
+                <span class="close-btn" onclick="closeModal('downloadModal')">&times;</span>
+            </div>
+            <form onsubmit="downloadTicket(event)">
+                <div class="form-group">
+                    <label>PNR Number</label>
+                    <input type="text" placeholder="Enter PNR" pattern="[0-9]{10}" required>
+                </div>
+                <button type="submit" class="submit-btn">Download PDF</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Cancel Modal -->
+    <div class="modal" id="cancelModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Cancel Ticket</h2>
+                <span class="close-btn" onclick="closeModal('cancelModal')">&times;</span>
+            </div>
+            <form onsubmit="cancelTicket(event)">
+                <div class="form-group">
+                    <label>PNR Number</label>
+                    <input type="text" placeholder="Enter PNR" pattern="[0-9]{10}" required>
+                </div>
+                <div class="form-group">
+                    <label>Reason for Cancellation</label>
+                    <textarea rows="3" placeholder="Enter reason" required></textarea>
+                </div>
+                <button type="submit" class="submit-btn">Cancel Booking</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Admin Modal -->
+    <div class="modal" id="adminModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Admin Panel</h2>
+                <span class="close-btn" onclick="closeModal('adminModal')">&times;</span>
+            </div>
+            <div class="result-box">
+                <h3>Admin Dashboard</h3>
+                <div class="info-row">
+                    <span class="info-label">Total Bookings Today:</span>
+                    <span class="info-value">1,234</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Active Trains:</span>
+                    <span class="info-value">567</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Revenue Today:</span>
+                    <span class="info-value">₹ 12,45,678</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Cancellations:</span>
+                    <span class="info-value">89</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tracking Modal -->
+    <div class="modal" id="trackingModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Train Live Tracking</h2>
+                <span class="close-btn" onclick="closeModal('trackingModal')">&times;</span>
+            </div>
+            <form onsubmit="trackTrain(event)">
+                <div class="form-group">
+                    <label>Train Number</label>
+                    <input type="text" placeholder="Enter train number" required>
+                </div>
+                <button type="submit" class="submit-btn">Track Train</button>
+            </form>
+            <div class="result-box" id="trackingResult" style="display:none;">
+                <h3>Live Status</h3>
+                <div class="info-row">
+                    <span class="info-label">Train:</span>
+                    <span class="info-value">12345 - Rajdhani Express</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Current Location:</span>
+                    <span class="info-value">Near Kanpur (350 km)</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Status:</span>
+                    <span class="info-value">Running 15 mins late</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Next Station:</span>
+                    <span class="info-value">Allahabad (ETA: 14:30)</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Login functionality
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            if(username && password) {
+                document.getElementById('loginPage').style.display = 'none';
+                document.getElementById('homePage').style.display = 'block';
+            }
+        });
+
+        // Logout functionality
+        function logout() {
+            document.getElementById('homePage').style.display = 'none';
+            document.getElementById('loginPage').style.display = 'flex';
+            document.getElementById('loginForm').reset();
+        }
+
+        // Modal functions
+        function openModal(modalId) {
+            document.getElementById(modalId).style.display = 'flex';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        // Form submissions
+        function checkPNR(e) {
+            e.preventDefault();
+            document.getElementById('pnrResult').style.display = 'block';
+        }
+
+        function searchTrain(e) {
+            e.preventDefault();
+            alert('Searching trains... Results will be displayed here.');
+        }
+
+        function bookTicket(e) {
+            e.preventDefault();
+            alert('Proceeding to payment gateway...');
+            closeModal('reservationModal');
+            openModal('paymentModal');
+        }
+
+        function saveAddress(e) {
+            e.preventDefault();
+            alert('Address saved successfully!');
+            closeModal('addressModal');
+        }
+
+        function processPayment(e) {
+            e.preventDefault();
+            alert('Payment processed successfully! Your ticket has been booked.');
+            closeModal('paymentModal');
+        }
+
+        function downloadTicket(e) {
+            e.preventDefault();
+            alert('Downloading ticket as PDF...');
+        }
+
+        function cancelTicket(e) {
+            e.preventDefault();
+            alert('Ticket cancelled successfully. Refund will be processed in 5-7 business days.');
+            closeModal('cancelModal');
+        }
+
+        function trackTrain(e) {
+            e.preventDefault();
+            document.getElementById('trackingResult').style.display = 'block';
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            if (event.target.className === 'modal') {
+                event.target.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>
